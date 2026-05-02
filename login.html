@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konekte | Rebel Roots Studio</title>
+    <style>
+        :root {
+            --nwa: #0a0a0a;
+            --wouj: #ce0000;
+            --blan: #ffffff;
+            --gri: #1a1a1a;
+        }
+        body {
+            background-color: var(--nwa);
+            color: var(--blan);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: var(--gri);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(206, 0, 0, 0.2);
+            border: 1px solid #333;
+            text-align: center;
+        }
+        h2 { color: var(--wouj); margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #000;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus { border-color: var(--wouj); outline: none; }
+        .btn-login {
+            background: var(--wouj);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .toggle-link {
+            margin-top: 15px;
+            font-size: 14px;
+            display: block;
+            color: #bbb;
+            text-decoration: none;
+        }
+        .toggle-link span { color: var(--wouj); font-weight: bold; }
+        .back-home {
+            margin-top: 20px;
+            display: inline-block;
+            color: #777;
+            text-decoration: none;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>KONEKTE</h2>
+        <form action="dashboard-kliyan.html"> <input type="email" placeholder="Email ou" required>
+            <input type="password" placeholder="Modpas" required>
+            <button type="submit" class="btn-login">ANTRE</button>
+        </form>
+
+          
+        <a href="enskripsyon.html" class="toggle-link">Ou gen yon kont deja? <span>Konekte la</span></a>
+    </div>
+
+</body>
+</html>

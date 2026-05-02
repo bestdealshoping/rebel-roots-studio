@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Rebel Roots</title>
+    <style>
+        :root { --nwa: #0a0a0a; --wouj: #ce0000; --gri: #1a1a1a; --vèt: #25d366; }
+        body { background: var(--nwa); color: white; font-family: sans-serif; margin: 0; padding: 15px; }
+        header { text-align: center; border-bottom: 2px solid var(--wouj); padding-bottom: 10px; margin-bottom: 20px; }
+        
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: var(--gri); padding: 15px; border-radius: 10px; text-align: center; border-bottom: 3px solid var(--wouj); }
+        .stat-card h3 { margin: 0; font-size: 12px; color: #888; }
+        .stat-card p { margin: 5px 0 0; font-size: 20px; font-weight: bold; }
+
+        .randevou-card {
+            background: var(--gri);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--vèt);
+            position: relative;
+        }
+        .randevou-header { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px; }
+        .client-name { font-weight: bold; color: var(--wouj); font-size: 18px; }
+        .service-tag { background: #333; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        
+        .info-line { font-size: 14px; margin: 5px 0; color: #ccc; }
+        .info-line b { color: white; }
+        
+        .btn-action {
+            display: flex; gap: 10px; margin-top: 15px;
+        }
+        .btn { flex: 1; padding: 10px; border: none; border-radius: 5px; font-weight: bold; font-size: 12px; text-align: center; text-decoration: none; }
+        .btn-wa { background: var(--vèt); color: white; }
+        .btn-delete { background: #444; color: #ff4444; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ADMIN <span style="color:var(--wouj)">DASHBOARD</span></h1>
+        <p style="font-size: 12px; color: #888;">Jesyon Rebel Roots Studio</p>
+    </header>
+
+    <div class="stat-grid">
+        <div class="stat-card"><h3>TOTAL KLIYAN</h3><p id="totalKliyan">0</p></div>
+        <div class="stat-card"><h3>RANDÉ-VOUS</h3><p id="totalRandevou">0</p></div>
+    </div>
+
+    <h2 style="font-size: 18px; margin-bottom: 15px;">LIS RANDÉ-VOUS YO</h2>
+    
+    <div id="lisRandevou">
+        </div>
+
+    <script>
+        // Nan yon vre sistèm, done sa yo t ap soti nan yon database (sèvè).
+        // Pou kounye a, nou simile sa ak done ki nan memwa tlf la.
+        const istwa = JSON.parse(localStorage.getItem('istwaServis')) || [];
+        const nonKliyan = localStorage.getItem('userNon') || "Bob Jean";
+        const telKliyan = localStorage.getItem('userTel') || "428246329";
+        const adresKliyan = localStorage.getItem('userAdres') || "Madeline";
+
+        document.getElementById('totalRandevou').innerText = istwa.length;
+        document.getElementById('totalKliyan').innerText = istwa.length > 0 ? "1" : "0";
+
+        const container = document.getElementById('lisRandevou');
+
+        if(istwa.length === 0) {
+            container.innerHTML = "<p style='text-align:center; color:#555;'>Okenn randevou poko sove.</p>";
+        } else {
+            istwa.reverse().forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="randevou-card">
+                        <div class="randevou-header">
+                            <span class="client-name">${nonKliyan}</span>
+                            <span class="service-tag">${item.sevis}</span>
+                        </div>
+                        <div class="info-line">📞 <b>Tlf:</b> ${telKliyan}</div>
+                        <div class="info-line">📍 <b>Adrès:</b> ${adresKliyan}</div>
+                        <div class="info-line">📅 <b>Dat:</b> ${item.dat}</div>
+                        <div class="info-line">⏰ <b>Lè:</b> ${item.le}</div>
+                        <div class="info-line">📝 <b>Nòt:</b> ${item.not || "Okenn nòt"}</div>
+                        
+                        <div class="btn-action">
+                            <a href="https://wa.me/${telKliyan}" class="btn btn-wa">KONTAKTE KLIYAN</a>
+                            <button class="btn btn-delete" onclick="deleteRandevou(${index})">EFASYON</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteRandevou(index) {
+            if(confirm("Èske ou vle efase randevou sa a?")) {
+                let currentIstwa = JSON.parse(localStorage.getItem('istwaServis'));
+                currentIstwa.splice(index, 1);
+                localStorage.setItem('istwaServis', JSON.stringify(currentIstwa));
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>

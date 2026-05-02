@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enskri | Rebel Roots Studio</title>
+    <style>
+        :root {
+            --nwa: #0a0a0a;
+            --wouj: #ce0000;
+            --blan: #ffffff;
+            --gri: #1a1a1a;
+        }
+        body {
+            background-color: var(--nwa);
+            color: var(--blan);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .register-container {
+            background: var(--gri);
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(206, 0, 0, 0.2);
+            border: 1px solid #333;
+            text-align: center;
+        }
+        h2 { color: var(--wouj); margin-bottom: 20px; text-transform: uppercase; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #000;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus { border-color: var(--wouj); outline: none; }
+        .btn-register {
+            background: var(--wouj);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        .toggle-link {
+            margin-top: 15px;
+            font-size: 14px;
+            display: block;
+            color: #bbb;
+            text-decoration: none;
+        }
+        .toggle-link span { color: var(--wouj); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <h2>KREYE YON KONT</h2>
+        <p style="font-size: 13px; color: #888;">Antre nan fanmi Rebel Roots la</p>
+        
+        <form id="regForm">
+    <input type="text" id="regNon" placeholder="Non konplè" required>
+    <input type="tel" id="regTel" placeholder="Nimewo Telefòn" required>
+    <input type="text" id="regAdres" placeholder="Adrès ou (Vil/Zòn)" required>
+    <input type="email" id="regEmail" placeholder="Email" required>
+    <input type="password" id="regPass" placeholder="Kreye yon modpas" required>
+    <button type="submit" class="btn-register">ENSKRI MWEN</button>
+</form>
+
+<script>
+    document.getElementById('regForm').onsubmit = function(e) {
+        e.preventDefault();
+        // Sove enfòmasyon yo nan memwa navigatè a
+        localStorage.setItem('userNon', document.getElementById('regNon').value);
+        localStorage.setItem('userTel', document.getElementById('regTel').value);
+        localStorage.setItem('userAdres', document.getElementById('regAdres').value);
+        localStorage.setItem('userEmail', document.getElementById('regEmail').value);
+        
+        alert("Enskripsyon reyisi!");
+        window.location.href = "login.html";
+    };
+</script>
+
+
+        <a href="login.html" class="toggle-link">Ou gen yon kont deja? <span>Konekte la</span></a>
+    </div>
+
+</body>
+</html>

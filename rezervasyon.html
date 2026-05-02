@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fè yon Rezèvasyon | Rebel Roots</title>
+    <style>
+        :root {
+            --nwa: #0a0a0a;
+            --wouj: #ce0000;
+            --blan: #ffffff;
+            --gri: #1a1a1a;
+        }
+        body {
+            background-color: var(--nwa);
+            color: var(--blan);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-container {
+            background: var(--gri);
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 500px;
+            margin: 10px auto;
+            border-top: 4px solid var(--wouj);
+        }
+        h2 { color: var(--wouj); text-align: center; margin-bottom: 20px; }
+        label { display: block; margin-top: 15px; font-size: 13px; color: #bbb; text-transform: uppercase; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            background: #000;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--wouj); outline: none; }
+        .info-pwofil {
+            background: #111;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px dashed #444;
+        }
+        .btn-voye {
+            background: var(--wouj);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .img-note {
+            font-size: 11px;
+            color: #888;
+            margin-top: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>REZÈVASYON</h2>
+        
+        <form id="bookingForm">
+            <div class="info-pwofil">
+                <label>Non konplè:</label>
+                <input type="text" id="non_kliyan" placeholder="Egz: Jean Philippe" required>
+
+                <label>Telefòn:</label>
+                <input type="tel" id="tel_kliyan" placeholder="Egz: +509 3XXX XXXX" required>
+
+                <label>Adrès:</label>
+                <input type="text" id="adres_kliyan" placeholder="Kote ou rete" required>
+            </div>
+
+            <label>Chwazi Sèvis la:</label>
+            <select id="sevis" required>
+                <option value="">-- Chwazi Sèvis --</option>
+                <option value="Dreadlocks">Dreadlocks</option>
+                <option value="Coupe Cheve">Coupe Cheve</option>
+                <option value="Tattoo">Tattoo</option>
+                <option value="Piercing">Piercing</option>
+            </select>
+
+            <label>Dat & Lè:</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="date" id="dat" required>
+                <input type="time" id="le" required>
+            </div>
+
+            <label>Nòt oswa Modèl:</label>
+            <textarea id="not" rows="3" placeholder="Detaye sa ou bezwen an..."></textarea>
+            <span class="img-note">💡 Apre ou fin klike, w ap ka voye foto modèl la sou WhatsApp.</span>
+
+            <button type="button" class="btn-voye" onclick="voyeWhatsApp()">REZÈVE SOU WHATSAPP</button>
+        </form>
+    </div>
+
+    <script>
+      function voyeWhatsApp() {
+    const non = document.getElementById('non_kliyan').value;
+    const sevis = document.getElementById('sevis').value;
+    const dat = document.getElementById('dat').value;
+    const le = document.getElementById('le').value;
+    const tlf_studio = "50942824391"; 
+    const not = document.getElementById('not').value;
+   
+
+    if(!non || !sevis || !dat || !le) {
+        alert("Ranpli tout chan yo!");
+        return;
+    }
+
+    // --- MAJIK POU ISTWA SÈVIS LA ---
+    let istwa = JSON.parse(localStorage.getItem('istwaServis')) || [];
+    let nouvoServis = { sevis: sevis, dat: dat, le: le };
+    istwa.push(nouvoServis);
+    localStorage.setItem('istwaServis', JSON.stringify(istwa));
+    // ---------------------------------
+
+    const mesaj = `*NOUVO RANDÉ-VOUS*%0A%0A👤 *Kliyan:* ${non}%0A✂️ *Sèvis:* ${sevis}%0A📅 *Dat:* ${dat}%0A⏰ *Lè:* ${le} %0A✉️ *not:* ${not}%0A✂️ `;
+    const url = `https://wa.me/${tlf_studio}?text=${mesaj}`;
+    window.open(url, '_blank');
+}
+
+    </script>
+
+</body>
+</html>

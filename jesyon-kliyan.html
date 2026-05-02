@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jesyon Kliyan | Rebel Roots Admin</title>
+    <style>
+        :root { --nwa: #0a0a0a; --wouj: #ce0000; --gri: #1a1a1a; --vèt: #25d366; }
+        body { background: var(--nwa); color: white; font-family: sans-serif; margin: 0; padding: 15px; }
+        header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--wouj); padding-bottom: 10px; }
+        
+        .search-box { width: 100%; padding: 12px; background: var(--gri); border: 1px solid #333; color: white; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; }
+        
+        .client-card {
+            background: var(--gri);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--wouj);
+        }
+        .client-info h3 { margin: 0; font-size: 16px; color: var(--blan); }
+        .client-info p { margin: 3px 0; font-size: 13px; color: #888; }
+        
+        .wa-icon {
+            background: var(--vèt);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="admin-dashboard.html" style="color:white; text-decoration:none; font-size: 20px;">←</a>
+        <h2 style="margin:0; font-size: 18px;">LIS KLIYANTÈ</h2>
+    </header>
+
+    <input type="text" class="search-box" placeholder="Chèche yon kliyan pa non..." onkeyup="filterClients()">
+
+    <div id="listKliyan">
+        <!-- Done yo ap parèt isit la -->
+    </div>
+
+    <script>
+        // Nou simulation lis kliyan yo. Nan lavni, yo pral soti nan Database la.
+        const kliyanYo = [
+            { non: "Bob Jean", tel: "428246329", adres: "Madeline", email: "bob@gmail.com" },
+            { non: "Mika Rose", tel: "31224455", adres: "Petite-Anse", email: "mika@yahoo.fr" }
+        ];
+
+        const container = document.getElementById('listKliyan');
+
+        function showClients(data) {
+            container.innerHTML = "";
+            data.forEach(kliyan => {
+                container.innerHTML += `
+                    <div class="client-card">
+                        <div class="client-info">
+                            <h3>${kliyan.non}</h3>
+                            <p>📍 ${kliyan.adres}</p>
+                            <p>📧 ${kliyan.email}</p>
+                        </div>
+                        <a href="https://wa.me/509${kliyan.tel}" class="wa-icon">📞</a>
+                    </div>
+                `;
+            });
+        }
+
+        // Montre tout kliyan yo lè paj la louvri
+        showClients(kliyanYo);
+
+        // Fonksyon pou chèche kliyan
+        function filterClients() {
+            const val = document.querySelector('.search-box').value.toLowerCase();
+            const filtered = kliyanYo.filter(k => k.non.toLowerCase().includes(val));
+            showClients(filtered);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifye Pwofil | Rebel Roots</title>
+    <style>
+        :root { --nwa: #0a0a0a; --wouj: #ce0000; --gri: #1a1a1a; }
+        body { background: var(--nwa); color: white; font-family: sans-serif; padding: 20px; }
+        .box { background: var(--gri); padding: 20px; border-radius: 10px; max-width: 400px; margin: auto; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box; }
+        .btn-save { background: var(--wouj); color: white; border: none; width: 100%; padding: 15px; border-radius: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 style="color: var(--wouj);">Mizajou Pwofil</h2>
+        <form id="editForm">
+            <label>Chanje Non:</label>
+            <input type="text" id="editNon">
+            <label>Chanje Telefòn:</label>
+            <input type="tel" id="editTel">
+            <label>Chanje Adrès:</label>
+            <input type="text" id="editAdres">
+            <button type="submit" class="btn-save">SOVE MODIFIKASYON YO</button>
+        </form>
+        <br>
+        <a href="dashboard-kliyan.html" style="color: #888; text-decoration: none; font-size: 14px;">← Retounen</a>
+    </div>
+
+    <script>
+        // Ranpli chan yo ak ansyen enfòmasyon yo otomatikman
+        document.getElementById('editNon').value = localStorage.getItem('userNon');
+        document.getElementById('editTel').value = localStorage.getItem('userTel');
+        document.getElementById('editAdres').value = localStorage.getItem('userAdres');
+
+        document.getElementById('editForm').onsubmit = function(e) {
+            e.preventDefault();
+            localStorage.setItem('userNon', document.getElementById('editNon').value);
+            localStorage.setItem('userTel', document.getElementById('editTel').value);
+            localStorage.setItem('userAdres', document.getElementById('editAdres').value);
+            alert("Pwofil ou mize ajou!");
+            window.location.href = "dashboard-kliyan.html";
+        };
+    </script>
+</body>
+</html>
