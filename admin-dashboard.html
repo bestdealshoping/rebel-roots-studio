@@ -126,15 +126,14 @@
         
         <a href="ajoute-travay.html">🖼️ Ajoute nan Portfolio</a>
 
-        <a href="statistik-avanse.html">📈 Statistik</a>
-        <a href="parametre.html">⚙️ Paramèt</a>
-        <a href="index.html" style="margin-top: 50px; color: #555;">Log Out</a>
-    </div>
-
-<button onclick="localStorage.removeItem('rebelPortfolio'); location.reload();" 
+        <button onclick="localStorage.removeItem('rebelPortfolio'); location.reload();" 
         style="background:orange; color:black; padding:10px; margin:20px; border-radius:5px; font-weight:bold;">
     ⚠️ NETWAYE TOUT FOTO KI KASE YO
 </button>
+
+        <a href="parametre.html">⚙️ Paramèt</a>
+        <a href="index.html" style="margin-top: 50px; color: #555;">Log Out</a>
+    </div>
 
 
     <div class="topnav">
@@ -193,6 +192,25 @@
         const adminNon = localStorage.getItem('adminNon') || "Woldjy";
         document.getElementById('adminNameDisplay').innerText = adminNon;
         document.getElementById('adminNameSidebar').innerText = adminNon;
+
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const db = getDatabase();
+const kliyanRef = ref(db, 'kliyan_yo');
+
+// Koute chanjman yo an dirèk
+onValue(kliyanRef, (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    const totalKliyan = Object.keys(data).length;
+    // Chanje chif nan kare statistik la (id="total-kliyan-display")
+    document.getElementById('total-kliyan-display').innerText = totalKliyan;
+    
+    // Si w vle wè lis la tou
+    console.log("Lis Kliyan:", data);
+  }
+});
+
     </script>
 </body>
 </html>
