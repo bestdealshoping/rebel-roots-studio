@@ -86,8 +86,20 @@
             border-top: 1px solid var(--gri);
         }
     </style>
+
+// Tcheke si gen yon sesyon ki sove nan memwa tlf la
+const userStatus = localStorage.getItem('rebel_session');
+
+if (userStatus === 'active') {
+    // Si li te deja konekte, voye l nan dashboard li dirèkteman
+    window.location.href = "dashboard-kliyan.html";
+}
+
+
 </head>
 <body>
+
+
 
     <header>
         <h1 style="margin:0;">REBEL ROOTS <span style="color: var(--wouj);">STUDIO</span></h1>
