@@ -81,19 +81,39 @@
     <button type="submit" class="btn-register">ENSKRI MWEN</button>
 </form>
 
-<script>
-    document.getElementById('regForm').onsubmit = function(e) {
-        e.preventDefault();
-        // Sove enfòmasyon yo nan memwa navigatè a
-        localStorage.setItem('userNon', document.getElementById('regNon').value);
-        localStorage.setItem('userTel', document.getElementById('regTel').value);
-        localStorage.setItem('userAdres', document.getElementById('regAdres').value);
-        localStorage.setItem('userEmail', document.getElementById('regEmail').value);
-        
-        alert("Enskripsyon reyisi!");
-        window.location.href = "login.html";
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
+    authDomain: "rebel-roots-studio.firebaseapp.com",
+    databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com",
+    projectId: "rebel-roots-studio",
+    storageBucket: "rebel-roots-studio.firebasestorage.app",
+    messagingSenderId: "860509135230",
+    appId: "1:860509135230:web:bae58f4c6ee5ee8dbbd32f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Fonksyon pou sove kliyan an
+  window.saveKliyan = function(non, telefon) {
+    const kliyanRef = ref(db, 'kliyan_yo');
+    const nouvoKliyan = push(kliyanRef);
+    set(nouvoKliyan, {
+      nom: non,
+      tel: telefon,
+      dat: new Date().toISOString()
+    }).then(() => {
+      localStorage.setItem('rebel_session', 'active'); // Sove sesyon an lokalman tou
+      alert("Enskripsyon reyisi!");
+      window.location.href = "dashboard-kliyan.html";
+    });
+  }
 </script>
+
 
 
         <a href="login.html" class="toggle-link">Ou gen yon kont deja? <span>Konekte la</span></a>
