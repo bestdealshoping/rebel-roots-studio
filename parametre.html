@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres | Rebel Admin</title>
+    <style>
+        :root {
+            --nwa: #0a0a0a;
+            --wouj: #ce0000;
+            --blan: #ffffff;
+            --gri: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--nwa);
+            color: var(--blan);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .back-link { color: var(--wouj); text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 20px; }
+
+        .section-box {
+            background: var(--gri);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--wouj);
+        }
+
+        h2, h3 { margin-top: 0; color: var(--wouj); }
+        h3 { font-size: 16px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: #888; margin-bottom: 5px; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn-save {
+            background: var(--wouj);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .ban-list-item {
+            display: flex;
+            justify-content: space-between;
+            background: #000;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .btn-unban { color: var(--wouj); cursor: pointer; border: none; background: none; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <a href="admin-dashboard.html" class="back-link">← Tounen nan Dashboard</a>
+
+    <div class="section-box">
+        <h3>🔑 Sekirite Admin</h3>
+        <div class="input-group">
+            <label>Kòd Aksè Dashboard (Modpas)</label>
+            <input type="text" id="admin-code" placeholder="Antre nouvo kòd la">
+        </div>
+        <button class="btn-save" onclick="updateAdminCode()">Chanje Kòd Aksè</button>
+    </div>
+
+    <div class="section-box">
+        <h3>💰 Pri & Estati Studio</h3>
+        <div class="input-group">
+            <label>Èske Studio a louvri pou randevou?</label>
+            <select id="studio-status" style="width:100%; padding:12px; background:#000; color:white; border:1px solid #333; border-radius:8px;">
+                <option value="true">WI (Louvri)</option>
+                <option value="false">NON (Fèmen)</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Pri Tattoo kòmanse nan (HTG)</label>
+            <input type="number" id="price-tattoo">
+        </div>
+        <button class="btn-save" onclick="saveStudioConfig()">Sove Pri ak Estati</button>
+    </div>
+
+    <div class="section-box">
+        <h3>🚫 Blacklist (Bani Kliyan)</h3>
+        <div class="input-group">
+            <label>Imèl Kliyan pou w bani a</label>
+            <input type="email" id="ban-email" placeholder="egzamp@mail.com">
+        </div>
+        <button class="btn-save" style="background:#555;" onclick="banUser()">Bani Kliyan sa a</button>
+        
+        <div id="ban-list-container" style="margin-top:15px;">
+            <p style="font-size:12px; color:#555;">Lis kliyan ki bani:</p>
+            <div id="ban-list"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
+            authDomain: "rebel-roots-studio.firebaseapp.com",
+            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com",
+            projectId: "rebel-roots-studio",
+            appId: "1:860509135230:web:bae58f4c6ee5ee8dbbd32f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- 1. ADMIN CODE ---
+        window.updateAdminCode = function() {
+            const newCode = document.getElementById('admin-code').value;
+            if(!newCode) return alert("Mete yon kòd!");
+            set(ref(db, 'admin_config/access_code'), newCode).then(() => alert("Kòd chanje!"));
+        }
+
+        // --- 2. STUDIO CONFIG ---
+        window.saveStudioConfig = function() {
+            const status = document.getElementById('studio-status').value === "true";
+            const price = document.getElementById('price-tattoo').value;
+            set(ref(db, 'config'), { status: status, price_tattoo: price })
+            .then(() => alert("Paramèt sove!"));
+        }
+
+        // --- 3. BAN SYSTEM ---
+        window.banUser = function() {
+            const email = document.getElementById('ban-email').value;
+            if(!email) return alert("Mete imèl la!");
+            const id = email.replace(/[.$#[\]]/g, "_"); // Firebase pa renmen pwen nan kle yo
+            set(ref(db, 'blacklist/' + id), { email: email })
+            .then(() => { alert("Kliyan sa a bani!"); document.getElementById('ban-email').value = ""; });
+        }
+
+        // Montre moun ki nan Blacklist la
+        onValue(ref(db, 'blacklist'), (snapshot) => {
+            const container = document.getElementById('ban-list');
+            container.innerHTML = "";
+            const data = snapshot.val();
+            if(data) {
+                Object.keys(data).forEach(id => {
+                    container.innerHTML += `
+                        <div class="ban-list-item">
+                            <span>${data[id].email}</span>
+                            <button class="btn-unban" onclick="unbanUser('${id}')">Debani</button>
+                        </div>
+                    `;
+                });
+            }
+        });
+
+        window.unbanUser = function(id) {
+            remove(ref(db, 'blacklist/' + id));
+        }
+
+        // Chaje done yo lè paj la louvri
+        onValue(ref(db, 'config'), (snapshot) => {
+            const d = snapshot.val();
+            if(d) {
+                document.getElementById('price-tattoo').value = d.price_tattoo || "";
+                document.getElementById('studio-status').value = d.status.toString();
+            }
+        });
+    </script>
+</body>
+</html>

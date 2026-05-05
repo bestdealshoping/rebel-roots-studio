@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Rebel Roots</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1a1a1a; padding: 40px; border-radius: 20px; border-top: 4px solid #ce0000; width: 300px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: none; background: #333; color: white; box-sizing: border-box; }
+        button { background: #ce0000; color: white; padding: 12px; width: 100%; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="color:#ce0000">ADMIN ACCESS</h2>
+        <input type="password" id="admin-pass" placeholder="Antre kòd sekirite a">
+        <button onclick="checkAdmin()">ANTRE NAN SISTÈM NAN</button>
+    </div>
+
+    <script>
+        function checkAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === "REBEL2026") { // Ou ka chanje modpas sa a
+                localStorage.setItem('admin_session', 'active');
+                window.location.href = "admin-dashboard.html";
+            } else {
+                alert("Kòd sa a pa bon!");
+            }
+        }
+    </script>
+</body>
+</html>

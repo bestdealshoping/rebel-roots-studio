@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lis Kliyan | Rebel Admin</title>
+    <style>
+        :root {
+            --nwa: #0a0a0a;
+            --wouj: #ce0000;
+            --blan: #ffffff;
+            --gri: #1a1a1a;
+            --vè: #25d366;
+        }
+
+        body {
+            background-color: var(--nwa);
+            color: var(--blan);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding-bottom: 30px;
+        }
+
+        header {
+            background: var(--gri);
+            padding: 20px;
+            border-bottom: 3px solid var(--wouj);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-container {
+            padding: 15px;
+            background: var(--nwa);
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: var(--gri);
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        #search-input:focus { border-color: var(--wouj); }
+
+        .client-list { padding: 15px; }
+
+        .client-card {
+            background: var(--gri);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--wouj);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .client-info h3 { margin: 0; font-size: 18px; text-transform: capitalize; }
+        .client-info p { margin: 5px 0 0; font-size: 13px; color: #888; }
+
+        .actions { display: flex; gap: 10px; }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .call-btn { background: #007bff; color: white; }
+        .wa-btn { background: var(--vè); color: white; }
+
+        .back-link {
+            color: var(--wouj);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2 style="margin:0;">JESYON <span style="color:var(--wouj)">KLIYAN</span></h2>
+    </header>
+
+    <div class="search-container">
+        <a href="admin-dashboard.html" class="back-link">← Tounen nan Dashboard</a>
+        <input type="text" id="search-input" placeholder="Chèche yon non oswa telefòn..." onkeyup="filterClients()">
+    </div>
+
+    <div class="client-list" id="clients-container">
+        <p style="text-align:center; color:#555;">Chaje lis la...</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
+            authDomain: "rebel-roots-studio.firebaseapp.com",
+            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com",
+            projectId: "rebel-roots-studio",
+            appId: "1:860509135230:web:bae58f4c6ee5ee8dbbd32f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const container = document.getElementById('clients-container');
+        let allClients = [];
+
+        // RALE KLIYAN YO DIRÈK
+        onValue(ref(db, 'kliyan_yo'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                allClients = Object.keys(data).map(id => ({ id, ...data[id] }));
+                renderClients(allClients);
+            } else {
+                container.innerHTML = "<p style='text-align:center;'>Pa gen kliyan nan lis la.</p>";
+            }
+        });
+
+        // FONKSYON POU AFICHE KLIYAN YO
+        function renderClients(list) {
+            container.innerHTML = "";
+            list.reverse().forEach(k => {
+                const card = `
+                    <div class="client-card">
+                        <div class="client-info">
+                            <h3>${k.nom}</h3>
+                            <p>📞 ${k.tel}</p>
+                            <p>📧 ${k.email || 'Pas d\'email'}</p>
+                        </div>
+                        <div class="actions">
+                            <a href="tel:${k.tel}" class="action-btn call-btn">📞</a>
+                            <a href="https://wa.me/509${k.tel.replace(/\s/g, '')}" class="action-btn wa-btn">💬</a>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // LOJIK RECHÈCH
+        window.filterClients = function() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = allClients.filter(k => 
+                k.nom.toLowerCase().includes(term) || k.tel.includes(term)
+            );
+            renderClients(filtered);
+        }
+    </script>
+
+</body>
+</html>

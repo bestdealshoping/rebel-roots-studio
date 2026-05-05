@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Kliyan | Rebel Roots</title>
+    
+    <script>
+        if (!localStorage.getItem('rebel_session')) {
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <style>
+        :root {
+            --nwa: #0a0a0a;
+            --wouj: #ce0000;
+            --blan: #ffffff;
+            --gri: #1a1a1a;
+        }
+        body {
+            background-color: var(--nwa);
+            color: var(--blan);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: var(--gri);
+            padding: 20px;
+            border-bottom: 2px solid var(--wouj);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .welcome-card {
+            background: linear-gradient(45deg, #1a1a1a, #333);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--wouj);
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .menu-item {
+            background: var(--gri);
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        .menu-item:hover {
+            border: 1px solid var(--wouj);
+            background: #222;
+        }
+        .btn-logout {
+            background: transparent;
+            color: var(--wouj);
+            border: 1px solid var(--wouj);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .status-badge {
+            background: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2 style="margin:0; font-size: 18px;">REBEL <span style="color:var(--wouj)">DASHBOARD</span></h2>
+        <button class="btn-logout" onclick="dekonekte()">SOTI</button>
+    </header>
+
+    <div class="container">
+        <div class="welcome-card">
+            <h1 style="margin:0; font-size: 24px;">Bonswa, Rebel!</h1>
+            <p id="user-email" style="color: #bbb; font-size: 14px;">Chaje enfòmasyon...</p>
+            <div class="status-badge">Kont Aktif</div>
+        </div>
+
+        <div class="menu-grid">
+            <a href="rezervasyon.html" class="menu-item">
+                <div style="font-size: 25px;">📅</div>
+                Rezève yon Plas
+            </a>
+            <a href="mes-rendezvous.html" class="menu-item">
+                <div style="font-size: 25px;">📝</div>
+                Randevou m yo
+            </a>
+            <a href="portfolio.html" class="menu-item">
+                <div style="font-size: 25px;">🎨</div>
+                Katalòg Tattoo
+            </a>
+            <a href="profil.html" class="menu-item">
+                <div style="font-size: 25px;">👤</div>
+                Modifye Profil
+            </a>
+        </div>
+
+        <div style="margin-top: 30px; background: #111; padding: 20px; border-radius: 10px; text-align: center;">
+            <p style="font-size: 13px; color: #777;">Si w gen yon ijans oswa w bezwen anile yon randevou, kontakte nou sou WhatsApp.</p>
+            <a href="https://wa.me/50942824391" style="color: #27ae60; text-decoration: none; font-weight: bold;">Klike la pou WhatsApp</a>
+        </div>
+    </div>
+
+    <script>
+        // Afiche imèl moun nan ki te sove nan Login lan
+        const email = localStorage.getItem('user_email') || "Kliyan Rebel";
+        document.getElementById('user-email').innerText = email;
+
+        // Fonksyon pou dekonekte
+        function dekonekte() {
+            localStorage.removeItem('rebel_session');
+            localStorage.removeItem('user_email');
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>
