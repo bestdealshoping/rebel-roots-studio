@@ -42,24 +42,35 @@
     <a href="index.html" class="back-home">← TOUNEN NAN AKÈY</a>
 
     <script>
-        // Nou rale foto ki sove yo nan memwa a
-        const fotoYo = JSON.parse(localStorage.getItem('rebelPortfolio')) || [];
-        const gallery = document.getElementById('portfolioGallery');
+    const gallery = document.getElementById('portfolioGallery');
+    const fotoYo = JSON.parse(localStorage.getItem('rebelPortfolio')) || [];
 
-if(fotoYo.length === 0) {
-    gallery.innerHTML = "<p style='text-align:center; color:#555;'>Okenn foto poko disponib.</p>";
-} else {
-    fotoYo.reverse().forEach(foto => {
-        // Kòd sa a korije erè guillemets yo ki te parèt sou ekran an
-        gallery.innerHTML += `
-            <div class="gallery-item">
-                <img src="${foto.url}" alt="Travay Rebel Roots">
-                <div class="desc">${foto.tit}</div>
-            </div>
-        `;
-    });
-}
+    gallery.innerHTML = ""; // Netwaye galri a
 
-    </script>
+    if (fotoYo.length === 0) {
+        gallery.innerHTML = "<p style='text-align:center; color:#555;'>Okenn foto poko disponib.</p>";
+    } else {
+        // Nou fè yon kopi epi nou ranvèse l pou pi nèf la parèt anlè
+        fotoYo.slice().reverse().forEach(foto => {
+            // Kreye eleman yo youn pa youn pou evite erè guillemets
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+
+            const img = document.createElement('img');
+            // Si link la pa kòmanse ak http, li p ap chaje l pou evite erè
+            img.src = foto.url.startsWith('http') ? foto.url : 'https://via.placeholder.com/300?text=Move+Link';
+            img.alt = "Travay Rebel Roots";
+
+            const desc = document.createElement('div');
+            desc.className = 'desc';
+            desc.innerText = foto.tit;
+
+            item.appendChild(img);
+            item.appendChild(desc);
+            gallery.appendChild(item);
+        });
+    }
+</script>
+
 </body>
 </html>
