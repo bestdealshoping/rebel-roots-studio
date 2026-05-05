@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rebel Roots Studio | Official</title>
+    
+    <script>
+        if (localStorage.getItem('rebel_session')) {
+            window.location.href = "dashboard-kliyan.html";
+        }
+    </script>
+
     <style>
         :root {
             --nwa: #0a0a0a;
@@ -44,6 +51,8 @@
             display: inline-block;
             margin-top: 20px;
             transition: 0.3s;
+            border: none;
+            cursor: pointer;
         }
         .section {
             padding: 60px 20px;
@@ -86,18 +95,8 @@
             border-top: 1px solid var(--gri);
         }
     </style>
-const userStatus = localStorage.getItem('rebel_session');
-
-if (userStatus === 'active') {
-
-    window.location.href = "dashboard-kliyan.html";
-}
-
-
 </head>
 <body>
-
-
 
     <header>
         <h1 style="margin:0;">REBEL ROOTS <span style="color: var(--wouj);">STUDIO</span></h1>
@@ -108,8 +107,9 @@ if (userStatus === 'active') {
         <h2 style="border:none; color: white; font-size: 35px;">Pran yon nouvo imaj.</h2>
         <p>Eksperyans, Atizay, ak Ijyèn nan yon sèl kote.</p>
         <a href="login.html" class="btn-main">KONEKTE POU REZÈVE</a>
-   <a href="portfolio.html" class="btn-main">WÈ TRAVAY NOU YO</a>
-   
+        <a href="portfolio.html" class="btn-main" style="background-color: transparent; border: 2px solid var(--wouj);">WÈ TRAVAY NOU YO</a>
+    </section>
+
     </section>
     
     
