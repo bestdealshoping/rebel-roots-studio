@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control | Rebel Roots</title>
+    
+    <style>
+        :root {
+            --nwa: #0a0a0a;
+            --wouj: #ce0000;
+            --blan: #ffffff;
+            --gri: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--nwa);
+            color: var(--blan);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* SIDEBAR STYLE */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            border-right: 2px solid var(--wouj);
+        }
+
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--wouj);
+            background: #1a1a1a;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            color: var(--wouj);
+        }
+
+        /* HEADER & MAIN */
+        header {
+            background-color: var(--gri);
+            border-bottom: 3px solid var(--wouj);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        #main-content {
+            transition: margin-left .5s;
+            padding: 20px;
+        }
+
+        .open-btn {
+            font-size: 25px;
+            cursor: pointer;
+            color: var(--wouj);
+            margin-right: 20px;
+        }
+
+        /* STAT CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--gri);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border-bottom: 4px solid var(--wouj);
+        }
+
+        .stat-card h3 { font-size: 12px; color: #888; margin: 0; text-transform: uppercase; }
+        .stat-card .number { font-size: 35px; font-weight: bold; color: var(--wouj); margin: 10px 0; }
+
+        /* TABLE STYLE */
+        .table-container {
+            background: var(--gri);
+            padding: 15px;
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            color: var(--wouj);
+            padding: 12px;
+            border-bottom: 2px solid #333;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #222;
+            font-size: 13px;
+        }
+
+        .btn-action {
+            background: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div style="text-align:center; padding:10px;">
+            <h2 style="color:var(--wouj); margin-bottom:20px;">REBEL ADMIN</h2>
+        </div>
+        <a href="admin-dashboard.html">📊 Dashboard</a>
+        <a href="jesyon-kliyan.html">👥 Kliyan yo</a>
+        <a href="jesyon-randevou.html">📅 Randevou</a>
+        <a href="ajoute-portfolio.html">🎨 Portfolio</a>
+        <a href="parametre.html">⚙️ Paramètres</a>
+        <a href="#" onclick="logout()" style="margin-top:40px; color:#555;">🔴 Logout</a>
+    </div>
+
+    <header>
+        <span class="open-btn" onclick="openNav()">&#9776;</span>
+        <h2 style="margin:0; font-size: 18px;">REBEL <span style="color:var(--wouj)">DASHBOARD</span></h2>
+    </header>
+
+    <div id="main-content">
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Kliyan</h3>
+                <div class="number" id="total-kliyan">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Randevou</h3>
+                <div class="number" id="total-rdv">0</div>
+            </div>
+        </div>
+
+        <h3 style="border-left: 4px solid var(--wouj); padding-left: 10px;">DÈNYE KLIYAN YO</h3>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Non</th>
+                        <th>Telefòn</th>
+                        <th>Aksyon</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-kliyan">
+                    <tr><td colspan="3" style="text-align:center;">Chaje done...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
+            authDomain: "rebel-roots-studio.firebaseapp.com",
+            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com",
+            projectId: "rebel-roots-studio",
+            storageBucket: "rebel-roots-studio.firebasestorage.app",
+            messagingSenderId: "860509135230",
+            appId: "1:860509135230:web:bae58f4c6ee5ee8dbbd32f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // KOUTE KLIYAN YO
+        onValue(ref(db, 'kliyan_yo'), (snapshot) => {
+            const data = snapshot.val();
+            const tabla = document.getElementById('lista-kliyan');
+            const totalK = document.getElementById('total-kliyan');
+
+            if (data) {
+                totalK.innerText = Object.keys(data).length;
+                tabla.innerHTML = "";
+                Object.keys(data).reverse().slice(0, 5).forEach(id => {
+                    const k = data[id];
+                    tabla.innerHTML += `
+                        <tr>
+                            <td>${k.nom}</td>
+                            <td>${k.tel}</td>
+                            <td><a href="tel:${k.tel}" class="btn-action">RELE</a></td>
+                        </tr>
+                    `;
+                });
+            }
+        });
+
+        // KOUTE RANDEVOU YO
+        onValue(ref(db, 'randevou'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                document.getElementById('total-rdv').innerText = Object.keys(data).length;
+            }
+        });
+    </script>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_session');
+            window.location.href = 'login-adm.html';
+        }
+    </script>
+
+</body>
+</html>
