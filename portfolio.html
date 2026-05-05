@@ -46,18 +46,20 @@
         const fotoYo = JSON.parse(localStorage.getItem('rebelPortfolio')) || [];
         const gallery = document.getElementById('portfolioGallery');
 
-        if(fotoYo.length === 0) {
-            gallery.innerHTML = "<p style='text-align:center; color:#555; width:100%; grid-column: 1/-1;'>Okenn foto poko disponib.</p>";
-        } else {
-            fotoYo.reverse().forEach(foto => {
-                gallery.innerHTML += `
-                    <div class="gallery-item">
-                        <img src="${foto.url}" alt="Travay Rebel Roots">
-                        <div class="desc">${foto.tit}</div>
-                    </div>
-                `;
-            });
-        }
+if(fotoYo.length === 0) {
+    gallery.innerHTML = "<p style='text-align:center; color:#555;'>Okenn foto poko disponib.</p>";
+} else {
+    fotoYo.reverse().forEach(foto => {
+        // Kòd sa a korije erè guillemets yo ki te parèt sou ekran an
+        gallery.innerHTML += `
+            <div class="gallery-item">
+                <img src="${foto.url}" alt="Travay Rebel Roots">
+                <div class="desc">${foto.tit}</div>
+            </div>
+        `;
+    });
+}
+
     </script>
 </body>
 </html>
