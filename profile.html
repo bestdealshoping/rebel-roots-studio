@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Mwen | Rebel Roots</title>
+    <style>
+        :root { --nwa: #0a0a0a; --wouj: #ce0000; --blan: #ffffff; --gri: #1a1a1a; }
+        body { background-color: var(--nwa); color: var(--blan); font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .form-box { background: var(--gri); padding: 25px; border-radius: 15px; max-width: 400px; margin: auto; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        .btn-update { background: var(--wouj); color: white; padding: 15px; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <a href="dashboard-kliyan.html" style="color:var(--wouj); text-decoration:none;">← Dashboard</a>
+    <h2 style="text-align:center;">MODIFYE <span style="color:var(--wouj)">PROFIL</span></h2>
+
+    <div class="form-box">
+        <label style="font-size:12px; color:#888;">Non Konplè</label>
+        <input type="text" id="new-name" placeholder="Tape nouvo non an">
+        
+        <label style="font-size:12px; color:#888;">Nimewo Telefòn</label>
+        <input type="tel" id="new-tel" placeholder="Ex: +509 4xxx-xxxx">
+
+        <button class="btn-update" onclick="saveProfile()">METE AJOU</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const app = initializeApp({ databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com" });
+        const db = getDatabase(app);
+        
+        // Nou itilize imèl la kòm kle pou jwenn kliyan an
+        const email = localStorage.getItem('user_email');
+        const userKey = email ? email.replace(/[.$#[\]]/g, "_") : null;
+
+        // Chaje done aktyèl yo
+        if(userKey) {
+            onValue(ref(db, 'kliyan_yo/' + userKey), (snapshot) => {
+                const data = snapshot.val();
+                if(data) {
+                    document.getElementById('new-name').value = data.nom || "";
+                    document.getElementById('new-tel').value = data.tel || "";
+                }
+            });
+        }
+
+        window.saveProfile = function() {
+            const name = document.getElementById('new-name').value;
+            const tel = document.getElementById('new-tel').value;
+
+            if(!name || !tel) return alert("Ranpli tout chan yo!");
+
+            update(ref(db, 'kliyan_yo/' + userKey), {
+                nom: name,
+                tel: tel
+            }).then(() => alert("Profil ou mete ajou!"));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezèvasyon | Rebel Roots</title>
+    <style>
+        :root {
+            --nwa: #0a0a0a;
+            --wouj: #ce0000;
+            --blan: #ffffff;
+            --gri: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--nwa);
+            color: var(--blan);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .back-btn { color: var(--wouj); text-decoration: none; font-size: 14px; margin-bottom: 20px; display: inline-block; }
+
+        .form-card {
+            background: var(--gri);
+            padding: 25px;
+            border-radius: 20px;
+            border-top: 5px solid var(--wouj);
+            max-width: 450px;
+            margin: auto;
+        }
+
+        h2 { text-align: center; color: var(--wouj); margin-top: 0; }
+
+        label { display: block; margin-top: 15px; font-size: 13px; color: #888; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #000;
+            color: white;
+            box-sizing: border-box;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus, select:focus { border-color: var(--wouj); }
+
+        .btn-reserve {
+            background: var(--wouj);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .status-msg {
+            background: #441111;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid var(--wouj);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="dashboard-kliyan.html" class="back-btn">← Tounen</a>
+
+    <div id="closed-msg" class="status-msg">
+        ⚠️ Studio a pa resevwa randevou pou kounye a. Eseye pi ta!
+    </div>
+
+    <div class="form-card">
+        <h2>REZÈVE YON PLAS</h2>
+        
+        <label>Chwazi Sèvis la</label>
+        <select id="sevis">
+            <option value="Tattoo">Tattoo (Atizay)</option>
+            <option value="Dreadlocks">Dreadlocks (Rasin)</option>
+            <option value="Coupe Cheve">Coupe Cheve</option>
+            <option value="Piercing">Piercing</option>
+        </select>
+
+        <label>Chwazi Dat la</label>
+        <input type="date" id="dat">
+
+        <label>Chwazi Lè a</label>
+        <select id="le">
+            <option value="09:00 AM">09:00 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="01:00 PM">01:00 PM</option>
+            <option value="03:00 PM">03:00 PM</option>
+            <option value="05:00 PM">05:00 PM</option>
+        </select>
+
+        <button class="btn-reserve" id="btn-submit" onclick="voyeRandevou()">KONFIME RANDEVOU</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
+            authDomain: "rebel-roots-studio.firebaseapp.com",
+            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com",
+            projectId: "rebel-roots-studio",
+            appId: "1:860509135230:web:bae58f4c6ee5ee8dbbd32f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // 1. TCHEKE SI STUDIO A LOUVRI (Konfigirasyon Admin)
+        onValue(ref(db, 'config'), (snapshot) => {
+            const config = snapshot.val();
+            if (config && config.status === false) {
+                document.getElementById('closed-msg').style.display = "block";
+                document.getElementById('btn-submit').disabled = true;
+                document.getElementById('btn-submit').style.background = "#555";
+                document.getElementById('btn-submit').innerText = "STUDIO FÈMEN";
+            }
+        });
+
+        // 2. VOYE RANDEVOU A
+        window.voyeRandevou = function() {
+            const sevis = document.getElementById('sevis').value;
+            const dat = document.getElementById('dat').value;
+            const le = document.getElementById('le').value;
+            
+            // Rale enfòmasyon kliyan an ki te sove nan Login lan
+            const kliyanEmail = localStorage.getItem('user_email') || "Kliyan Anonyme";
+
+            if (!dat) {
+                alert("Tanpri chwazi yon dat!");
+                return;
+            }
+
+            const rdvRef = ref(db, 'randevou');
+            push(rdvRef, {
+                kliyan: kliyanEmail,
+                sevis: sevis,
+                dat: dat,
+                le: le,
+                tel: "Verifye nan lis kliyan", // Admin nan ap tou wè tel la nan lis kliyan li
+                status: "Pending"
+            }).then(() => {
+                alert("Randevou ou sove! Rebel Roots Studio ap tann ou.");
+                window.location.href = "dashboard-kliyan.html";
+            }).catch((err) => alert("Erè: " + err.message));
+        }
+    </script>
+
+</body>
+</html>
