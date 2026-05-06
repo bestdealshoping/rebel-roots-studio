@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalòg Percing | Rebel Roots</title>
+    <title>Katalòg Piercing | Rebel Roots</title>
     <style>
         body { background: #0a0a0a; color: white; font-family: sans-serif; margin: 0; padding: 15px; }
         .gallery {
@@ -25,7 +25,7 @@
 <body>
 
     <a href="katalog.html" class="back">← Retounen nan lis la</a>
-    <h2 id="cat-title">Katalòg peircing</h2>
+    <h2 id="cat-title">Katalòg piercing</h2>
 
     <div class="gallery" id="gallery-container">
         <p style="color:#555;">Chaje bèl travay yo...</p>
@@ -39,7 +39,7 @@
         const db = getDatabase(app);
 
         // NOU FILTRE PA KATEGORI (Chanje "Tattoo" pou lòt paj yo)
-        const currentCategory = "Tattoo"; 
+        const currentCategory = "Piercing"; 
 
         onValue(ref(db, 'portfolio'), (snapshot) => {
             const container = document.getElementById('gallery-container');
