@@ -125,18 +125,27 @@
         </div>
     </div>
 
-    <script>
-        // Afiche imèl moun nan ki te sove nan Login lan
-        const email = localStorage.getItem('user_email') || "Kliyan Rebel";
-        document.getElementById('user-email').innerText = email;
+    <script type="module">
+    // ... (Kòd Firebase la anlè a)
 
-        // Fonksyon pou dekonekte
-        function dekonekte() {
-            localStorage.removeItem('rebel_session');
-            localStorage.removeItem('user_email');
-            window.location.href = "index.html";
-        }
-    </script>
+    // Rale enfòmasyon nan memwa oswa nan Database
+    const email = localStorage.getItem('user_email');
+    const userKey = email ? email.replace(/[.$#[\]]/g, "_") : null;
+
+    if(userKey) {
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        const db = getDatabase();
+        onValue(ref(db, 'kliyan_yo/' + userKey), (snapshot) => {
+            const data = snapshot.val();
+            if(data) {
+                // Si ou gen yon <h2> kote w ekri "Bonswa", n ap mete non an ladan l
+                document.getElementById('display-name').innerText = data.nom;
+                localStorage.setItem('user_nom', data.nom); // Kenbe l ajou
+                localStorage.setItem('user_tel', data.tel);
+            }
+        });
+    }
+</script>
 
 </body>
 </html>
