@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enskripsyon | Rebel Roots</title>
     <style>
-        body { background: #0a0a0a; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .card { background: #1a1a1a; padding: 30px; border-radius: 15px; max-width: 350px; margin: auto; border-bottom: 3px solid #ce0000; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 5px; border: none; background: #333; color: white; }
-        .btn { background: #ce0000; color: white; padding: 12px; width: 95%; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        :root { --nwa: #0a0a0a; --wouj: #ce0000; --gri: #1a1a1a; }
+        body { background: var(--nwa); color: white; font-family: sans-serif; padding: 20px; }
+        .box { background: var(--gri); padding: 20px; border-radius: 15px; border-top: 5px solid var(--wouj); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        button { background: var(--wouj); color: white; padding: 15px; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <div class="card">
-        <h2 style="color:#ce0000">KREYE KONT</h2>
-        <input type="text" id="nom" placeholder="Non konplè">
-        <input type="email" id="email" placeholder="Imèl">
-        <input type="tel" id="tel" placeholder="Nimewo Telefòn">
-        <input type="password" id="password" placeholder="Modpas">
-        <button class="btn" onclick="enskriKliyan()">ENSRKI KOUNYA</button>
+    <div class="box">
+        <h2>KREYE KONT OU</h2>
+        <input type="text" id="nom" placeholder="Non Konplè">
+        <input type="tel" id="tel" placeholder="Telefòn">
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="pass" placeholder="Modpas">
+        <button onclick="enskri()">KREYE KONT</button>
     </div>
 
     <script type="module">
@@ -29,36 +29,41 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
-            authDomain: "rebel-roots-studio.firebaseapp.com",
-            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com",
-            projectId: "rebel-roots-studio",
-            appId: "1:860509135230:web:bae58f4c6ee5ee8dbbd32f"
+            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com"
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        window.enskriKliyan = function() {
+        window.enskri = function() {
             const nom = document.getElementById('nom').value;
-            const email = document.getElementById('email').value;
             const tel = document.getElementById('tel').value;
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCred) => {
-                    // Sove enfòmasyon yo nan Database la pou Admin
-                    set(ref(db, 'kliyan_yo/' + userCred.user.uid), {
-                        nom: nom,
-                        tel: tel,
-                        email: email,
-                        dat: new Date().toLocaleDateString()
-                    }).then(() => {
-                        localStorage.setItem('rebel_session', 'active');
-                        window.location.href = "dashboard-kliyan.html";
-                    });
-                })
-                .catch((err) => alert("Erè: " + err.message));
+            if(!nom || !tel || !email || !pass) return alert("Ranpli tout chan yo!");
+
+            createUserWithEmailAndPassword(auth, email, pass)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                // Netwaye email pou itilize kòm kle
+                const userKey = email.replace(/[.$#[\]]/g, "_");
+
+                // SOVE ENFO YO NAN DATABASE LA
+                set(ref(db, 'kliyan_yo/' + userKey), {
+                    nom: nom,
+                    tel: tel,
+                    email: email,
+                    uid: user.uid
+                }).then(() => {
+                    // Sove nan memwa telefòn nan pou Dashboard la ka wè l
+                    localStorage.setItem('user_email', email);
+                    localStorage.setItem('user_nom', nom);
+                    alert("Kont ou kreye ak siksè!");
+                    window.location.href = "dashboard-kliyan.html";
+                });
+            })
+            .catch(err => alert("Erè: " + err.message));
         }
     </script>
 </body>
