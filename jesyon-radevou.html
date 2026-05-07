@@ -3,166 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Randevou | Rebel Admin</title>
+    <title>Admin Randevou</title>
     <style>
-        :root {
-            --nwa: #0a0a0a;
-            --wouj: #ce0000;
-            --blan: #ffffff;
-            --gri: #1a1a1a;
-        }
-
-        body {
-            background-color: var(--nwa);
-            color: var(--blan);
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            padding-bottom: 50px;
-        }
-
-        header {
-            background: var(--gri);
-            padding: 20px;
-            border-bottom: 3px solid var(--wouj);
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .container { padding: 15px; }
-
-        .back-link {
-            color: var(--wouj);
-            text-decoration: none;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-
-        .rdv-card {
-            background: var(--gri);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-right: 5px solid var(--wouj);
-            position: relative;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .rdv-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .rdv-header h3 { margin: 0; color: var(--wouj); font-size: 20px; }
-
-        .time-badge {
-            background: #333;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .rdv-details { font-size: 14px; color: #bbb; }
-        .rdv-details span { display: block; margin-top: 5px; }
-
-        .btn-complete {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 50px;
-            color: #555;
-        }
+        body { background: #0a0a0a; color: white; font-family: sans-serif; padding: 15px; }
+        .rdv-card { background: #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #ce0000; }
+        .btn-del { background: #ce0000; color: white; border: none; padding: 8px; border-radius: 5px; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
-
-    <header>
-        <h2 style="margin:0;">JESYON <span style="color:var(--wouj)">RANDEVOU</span></h2>
-    </header>
-
-    <div class="container">
-        <a href="admin-dashboard.html" class="back-link">← Tounen nan Dashboard</a>
-        
-        <div id="rdv-list">
-            <p style="text-align:center; color:#555;">Chaje randevou yo...</p>
-        </div>
-    </div>
+    <a href="admin-dashboard.html" style="color:#ce0000;">← Dashboard</a>
+    <h2>LIST RANDEVOU</h2>
+    <div id="rdv-list-admin">Chaje...</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
-            authDomain: "rebel-roots-studio.firebaseapp.com",
-            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com",
-            projectId: "rebel-roots-studio",
-            appId: "1:860509135230:web:bae58f4c6ee5ee8dbbd32f"
-        };
-
-        const app = initializeApp(firebaseConfig);
+        const app = initializeApp({ databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com" });
         const db = getDatabase(app);
 
-        const rdvContainer = document.getElementById('rdv-list');
-
-        // RALE RANDEVOU YO AN TAN REYÈL
         onValue(ref(db, 'randevou'), (snapshot) => {
+            const container = document.getElementById('rdv-list-admin');
+            container.innerHTML = "";
             const data = snapshot.val();
-            if (data) {
-                rdvContainer.innerHTML = "";
-                // Nou triye yo pou randevou ki pi resan yo parèt anlè
+            if(data) {
                 Object.keys(data).reverse().forEach(id => {
                     const r = data[id];
-                    const card = `
+                    container.innerHTML += `
                         <div class="rdv-card">
-                            <div class="rdv-header">
-                                <h3>${r.kliyan}</h3>
-                                <div class="time-badge">⏰ ${r.le}</div>
-                            </div>
-                            <div class="rdv-details">
-                                <span>📅 <strong>Dat:</strong> ${r.dat}</span>
-                                <span>🛠️ <strong>Sèvis:</strong> ${r.sevis}</span>
-                                <span>📞 <strong>Tel:</strong> ${r.tel}</span>
-                            </div>
-                            <button class="btn-complete" onclick="finiRandevou('${id}')">SÈVIS FINI / EFADE</button>
+                            <strong>${r.kliyan}</strong><br>
+                            Sèvis: ${r.sevis} | Lè: ${r.le}<br>
+                            Dat: ${r.dat}
+                            <button class="btn-del" onclick="efaseRdv('${id}')">EFASE</button>
                         </div>
                     `;
-                    rdvContainer.innerHTML += card;
                 });
-            } else {
-                rdvContainer.innerHTML = "<div class='no-data'>Pa gen randevou pou kounye a. 😎</div>";
-            }
+            } else { container.innerHTML = "Pa gen randevou."; }
         });
 
-        // FONKSYON POU EFADE RANDEVOU
-        window.finiRandevou = function(id) {
-            if(confirm("Èske w sèten ou vle efase randevou sa a?")) {
-                remove(ref(db, 'randevou/' + id))
-                .then(() => alert("Randevou efase ak siksè!"))
-                .catch((err) => alert("Erè: " + err.message));
-            }
+        window.efaseRdv = (id) => {
+            if(confirm("Efase randevou sa a?")) remove(ref(db, 'randevou/' + id));
         }
     </script>
-
 </body>
 </html>
