@@ -95,7 +95,7 @@
 
     <div class="container">
         <div class="welcome-card">
-            <h1 style="margin:0; font-size: 24px;">Bonswa, Rebel!</h1>
+            <h1 style="margin:0; font-size: 24px;">Bonswa, <span id="display-name">Rebel</span>!</h1>
             <p id="user-email" style="color: #bbb; font-size: 14px;">Chaje enfòmasyon...</p>
             <div class="status-badge">Kont Aktif</div>
         </div>
@@ -109,9 +109,9 @@
                 <div style="font-size: 25px;">📝</div>
                 Randevou m yo
             </a>
-            <a href="portfolio.html" class="menu-item">
+            <a href="katalog-main.html" class="menu-item">
                 <div style="font-size: 25px;">🎨</div>
-                Katalòg Tattoo
+                Katalòg Studio
             </a>
             <a href="profil.html" class="menu-item">
                 <div style="font-size: 25px;">👤</div>
@@ -125,32 +125,40 @@
         </div>
     </div>
 
-    <script>
-        // Afiche imèl moun nan ki te sove nan Login lan
-        const email = localStorage.getItem('user_email') || "Kliyan Rebel";
-        document.getElementById('user-email').innerText = email;
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Fonksyon pou dekonekte
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
+            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const email = localStorage.getItem('user_email');
+        if (email) {
+            document.getElementById('user-email').innerText = email;
+            
+            // Rale Non Kliyan an nan Database la
+            const userKey = email.replace(/[.$#[\]]/g, "_");
+            onValue(ref(db, 'kliyan_yo/' + userKey), (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.nom) {
+                    document.getElementById('display-name').innerText = data.nom;
+                    localStorage.setItem('user_nom', data.nom); // Sove l pou paj rezèvasyon an
+                }
+            });
+        }
+    </script>
+
+    <script>
         function dekonekte() {
             localStorage.removeItem('rebel_session');
             localStorage.removeItem('user_email');
-            window.location.href = "index.html";
+            localStorage.removeItem('user_nom');
+            window.location.href = "login.html";
         }
-
-// Nan kòd Dashboard la, ajoute sa pou afiche Non an:
-const userEmail = localStorage.getItem('user_email');
-if (userEmail) {
-    const userKey = userEmail.replace(/[.$#[\]]/g, "_");
-    onValue(ref(db, 'kliyan_yo/' + userKey), (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            // "non-kliyan" se ID kote non an dwe parèt nan HTML ou a
-            document.getElementById('non-kliyan').innerText = data.nom;
-            localStorage.setItem('user_nom', data.nom);
-        }
-    });
-}
-
     </script>
 
 </body>
