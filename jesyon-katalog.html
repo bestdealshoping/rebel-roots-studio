@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hc">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jesyon Katalòg | Rebel Admin</title>
+    <style>
+        :root { --nwa: #0a0a0a; --wouj: #ce0000; --gri: #1a1a1a; }
+        body { background: var(--nwa); color: white; font-family: sans-serif; padding: 20px; }
+        .back-link { color: var(--wouj); text-decoration: none; display: block; margin-bottom: 20px; }
+        
+        .grid-manage {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .photo-card {
+            background: var(--gri);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .photo-card img { width: 100%; height: 120px; object-fit: cover; }
+        
+        .card-info { padding: 10px; text-align: center; }
+        .card-info h4 { margin: 0 0 10px; font-size: 12px; color: #bbb; }
+
+        .btn-group { display: flex; gap: 5px; justify-content: center; }
+        
+        .btn-edit { background: #2980b9; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-size: 10px; flex: 1; }
+        .btn-delete { background: var(--wouj); color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-size: 10px; flex: 1; }
+    </style>
+</head>
+<body>
+
+    <a href="admin-dashboard.html" class="back-link">← Tounen nan Dashboard</a>
+    <h2>JERE <span style="color:var(--wouj)">KATALÒG</span></h2>
+
+    <div class="grid-manage" id="manage-container">
+        <p style="text-align:center; color:#555;">Chaje foto yo...</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1TkH7PhX52xx2oF20ZTdt6uNftdE28ew",
+            databaseURL: "https://rebel-roots-studio-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Rale tout foto yo
+        onValue(ref(db, 'portfolio'), (snapshot) => {
+            const container = document.getElementById('manage-container');
+            container.innerHTML = "";
+            const data = snapshot.val();
+
+            if (data) {
+                Object.keys(data).reverse().forEach(id => {
+                    const item = data[id];
+                    container.innerHTML += `
+                        <div class="photo-card" id="card-${id}">
+                            <img src="${item.url}" alt="Foto">
+                            <div class="card-info">
+                                <h4>${item.tit}</h4>
+                                <div class="btn-group">
+                                    <button class="btn-edit" onclick="modifyeFoto('${id}', '${item.tit}')">Modifye</button>
+                                    <button class="btn-delete" onclick="efaseFoto('${id}')">Efase</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = "<p>Pa gen anyen nan katalòg la.</p>";
+            }
+        });
+
+        // FONKSYON POU EFASE
+        window.efaseFoto = function(id) {
+            if (confirm("Èske w sèten ou vle efase foto sa a nèt?")) {
+                remove(ref(db, 'portfolio/' + id))
+                .then(() => alert("Foto efase ak siksè!"));
+            }
+        }
+
+        // FONKSYON POU MODIFYE TIT LA
+        window.modifyeFoto = function(id, titVye) {
+            const nouvoTit = prompt("Modifye Tit la:", titVye);
+            if (nouvoTit !== null && nouvoTit !== "") {
+                update(ref(db, 'portfolio/' + id), {
+                    tit: nouvoTit
+                }).then(() => alert("Tit la chanje!"));
+            }
+        }
+    </script>
+</body>
+</html>
